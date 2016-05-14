@@ -1,4 +1,10 @@
-$.ajax({ url: $('.thickbox').attr('href'), success: function(data) { mal_parse_date(data) } });
+/*
+* This script gets and sets Start Date and Finish Date from your anime history.
+* Run it in the browser console at page http://myanimelist.net/editlist.php.
+* Ckick [Submit]
+*/
+
+$.ajax({ url: $('.thickbox').attr('href'), success: function(data) { mal_parse_date(data); } });
 
 function mal_parse_date(content) {
 	var $content = $('<div>').append(content.match(/<body[^>]*>(.|[\n\r])*<\/body>/gm)[0]);
@@ -10,6 +16,10 @@ function mal_parse_date(content) {
 		}
 	});
 
+	if (ids.length === 0) {
+		return false;
+	}
+
 	var getdate = function(id, $content) {
 		$content.find('#eprow' + id).find('a').remove();
 		var str = $content.find('#eprow' + id).html();
@@ -18,7 +28,7 @@ function mal_parse_date(content) {
 	}
 
 	var max_id = Math.max.apply(null, ids);
-	if (max_id != null) {
+	if (max_id > 0) {
 		var date = getdate(max_id, $content);
 		$('#add_anime_finish_date_month').val(parseInt(date[0]));
 		$('#add_anime_finish_date_day').val(parseInt(date[1]));
@@ -26,7 +36,7 @@ function mal_parse_date(content) {
 	}
 
 	var min_id = Math.min.apply(null, ids);
-	if (min_id != null) {
+	if (min_id > 0) {
 		var date = getdate(min_id, $content);
 		$('#add_anime_start_date_month').val(parseInt(date[0]));
 		$('#add_anime_start_date_day').val(parseInt(date[1]));
